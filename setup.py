@@ -3,15 +3,15 @@ from setuptools import setup, find_packages
 
 setup(
     name="phaseleap",  # This will be the package name for PyPI
-    version="0.1.0",
+    version="0.1.1",
     author="shant dv",  # Use a nickname or pseudonym if privacy is a concern
-    author_email="placeholder@example.com",  # Placeholder for now
+    author_email="phaseleap@gmail.com",  
     description="PhaseLeap: Adaptive AI Optimization Through Phase Shifts",
-    long_description='long_description placeholder',
+    long_description='long_description placeholder', # placeholder
     long_description_content_type="text/markdown",
-    url="https://placeholder.com",  # Placeholder until GitHub repo exists
+    url="https://github.com/phaseleap/phaseleap",
     project_urls={
-        "Bug Tracker": "https://placeholder.com/issues",  # Placeholder
+        "Bug Tracker": "https://placeholder.com/issues",  # placeholder
     },
     license="MIT",  
     classifiers=[

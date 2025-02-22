@@ -18,13 +18,19 @@ def calculate_coherence(model):
 
 def calculate_entropy(model, x_sample):
     activations = []
-    model.predict(x_sample[:10])  # Warm-up call
+    sample = x_sample[:10]  # Use consistent sample size
+
+    # Precompile predictions
+    _ = model.predict(sample)
+
     for layer in model.layers:
-        if isinstance(layer, (tf.keras.layers.Conv2D, tf.keras.layers.Dense)):
+        if isinstance(layer, tf.keras.layers.Conv2D) or isinstance(layer, tf.keras.layers.Dense):
             intermediate_model = tf.keras.models.Model(inputs=model.input, outputs=layer.output)
-            layer_output = intermediate_model.predict(x_sample[:10])
+            layer_output = intermediate_model.predict(sample)
             activations.append(layer_output)
+
     flat_activations = np.concatenate([act.flatten() for act in activations])
     hist, _ = np.histogram(flat_activations, bins=50, density=True)
     hist = hist[hist > 0]
     return shannon_entropy(hist)
+

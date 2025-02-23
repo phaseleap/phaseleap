@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="phaseleap",  # This will be the package name for PyPI
-    version="0.1.1",
+    version="0.1.2",
     author="shant dv",  # Use a nickname or pseudonym if privacy is a concern
     author_email="phaseleap@gmail.com",  
     description="PhaseLeap: Adaptive AI Optimization Through Phase Shifts",

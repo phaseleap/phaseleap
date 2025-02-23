@@ -4,15 +4,31 @@ import numpy as np
 from phaseleap.metrics import calculate_coherence, calculate_entropy
 from phaseleap.utils import trigger_phase_shift
 
-def build_model(input_shape=(32, 32, 3), num_classes=10):
+def build_model(input_shape=(32, 32, 3), num_classes=10, architecture='CNN'):
     inputs = tf.keras.Input(shape=input_shape)
-    x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu')(inputs)
-    x = tf.keras.layers.MaxPooling2D((2, 2))(x)
-    x = tf.keras.layers.Conv2D(64, (3, 3), activation='relu')(x)
-    x = tf.keras.layers.MaxPooling2D((2, 2))(x)
+
+    if architecture == 'CNN':
+        x = tf.keras.layers.Conv2D(32, (3, 3), activation='relu')(inputs)
+        x = tf.keras.layers.MaxPooling2D((2, 2))(x)
+        x = tf.keras.layers.Conv2D(64, (3, 3), activation='relu')(x)
+        x = tf.keras.layers.MaxPooling2D((2, 2))(x)
+    elif architecture == 'LSTM':
+        x = tf.keras.layers.Reshape((input_shape[0], input_shape[1] * input_shape[2]))(inputs)
+        x = tf.keras.layers.LSTM(128, return_sequences=True)(x)
+        x = tf.keras.layers.LSTM(64)(x)
+    elif architecture == 'GRU':
+        x = tf.keras.layers.Reshape((input_shape[0], input_shape[1] * input_shape[2]))(inputs)
+        x = tf.keras.layers.GRU(128, return_sequences=True)(x)
+        x = tf.keras.layers.GRU(64)(x)
+    elif architecture == 'RNN':
+        x = tf.keras.layers.Reshape((input_shape[0], input_shape[1] * input_shape[2]))(inputs)
+        x = tf.keras.layers.SimpleRNN(128, return_sequences=True)(x)
+        x = tf.keras.layers.SimpleRNN(64)(x)
+
     x = tf.keras.layers.Flatten()(x)
     x = tf.keras.layers.Dense(128, activation='relu')(x)
     outputs = tf.keras.layers.Dense(num_classes, activation='softmax')(x)
+
     model = tf.keras.Model(inputs=inputs, outputs=outputs)
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model

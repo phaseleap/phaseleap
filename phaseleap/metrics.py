@@ -7,7 +7,7 @@ def calculate_coherence(model):
     total_similarity = 0
     layers_considered = 0
     for layer in model.layers:
-        if isinstance(layer, (tf.keras.layers.Conv2D, tf.keras.layers.Dense)):
+        if isinstance(layer, (tf.keras.layers.Conv2D, tf.keras.layers.Dense, tf.keras.layers.LSTM, tf.keras.layers.GRU, tf.keras.layers.SimpleRNN)):
             weights = layer.get_weights()[0]
             norm = np.linalg.norm(weights)
             if norm != 0:
@@ -18,13 +18,11 @@ def calculate_coherence(model):
 
 def calculate_entropy(model, x_sample):
     activations = []
-    sample = x_sample[:10]  # Use consistent sample size
-
-    # Precompile predictions
+    sample = x_sample[:10]
     _ = model.predict(sample)
 
     for layer in model.layers:
-        if isinstance(layer, tf.keras.layers.Conv2D) or isinstance(layer, tf.keras.layers.Dense):
+        if isinstance(layer, (tf.keras.layers.Conv2D, tf.keras.layers.Dense, tf.keras.layers.LSTM, tf.keras.layers.GRU, tf.keras.layers.SimpleRNN)):
             intermediate_model = tf.keras.models.Model(inputs=model.input, outputs=layer.output)
             layer_output = intermediate_model.predict(sample)
             activations.append(layer_output)
@@ -33,4 +31,3 @@ def calculate_entropy(model, x_sample):
     hist, _ = np.histogram(flat_activations, bins=50, density=True)
     hist = hist[hist > 0]
     return shannon_entropy(hist)
-
